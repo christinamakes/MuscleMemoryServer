@@ -8,8 +8,7 @@ module.exports = {
         process.env.DATABASE_URL || 'mongodb://localhost/workout-app',
 
     TEST_DATABASE_URL:
-        process.env.TEST_DATABASE_URL ||
-        'mongodb://localhost/workout-app-test',
+        process.env.TEST_DATABASE_URL || 'mongodb://localhost/workout-app-test',
 
     JWT_SECRET: 
         process.env.JWT_SECRET,

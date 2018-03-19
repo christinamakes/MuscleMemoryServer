@@ -30,13 +30,14 @@ router.get('/workout', (req, res) => {
   Workout
     .find()
     .where({userId: userId})
-    .populate('exercises')
     .then(results => {
       return res.status(200).json(results);
     });
   
 });
 
+
+// under construction
 router.get('/muscles/workout', (req, res) => {
   const {userId} = req.query;
   Workout
@@ -71,6 +72,18 @@ router.get('/muscles/workout', (req, res) => {
     });
 });
 
+router.get('/id/exercises', (req,res) => {
+  const {userId, workoutId} = req.query;
+  Workout
+    .findById({_id: workoutId})
+    .where({userId: userId})
+    .populate('exercises')
+    .then(workout => {
+      const names = workout.exercises.map(exercise => exercise.exerciseName);
+      res.json(names);
+    });
+});
+
 router.get('/id/muscles', (req, res) => {
   const {userId, workoutId} = req.query;
   Workout
@@ -83,15 +96,11 @@ router.get('/id/muscles', (req, res) => {
       .reduce((aggregate, exercise) => {
         return [...aggregate, ...exercise.musclesWorked];
       }, []);
-
       const countedNames = countBy(muscles, (muscle) => {
         return muscle.name;
       });
-
-      
       return res.status(200).json(countedNames);
     });
-  
 });
 
 module.exports = router;
