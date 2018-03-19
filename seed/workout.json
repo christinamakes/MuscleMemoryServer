@@ -1,0 +1,8 @@
+[
+  {
+    "userId": "333333333333333333333300",
+    "exercises": ["bicep curl", "overhead press"],
+    "musclesWorked": [1, 2],
+    "secondaryMusclesWorked": [7, 9]
+  }
+]
