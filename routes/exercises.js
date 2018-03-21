@@ -13,9 +13,9 @@ const jwtAuth = passport.authenticate('jwt', { session: false });
 
 // A protected endpoint which needs a valid JWT to access it
 router.post('/exercise', jwtAuth,(req, res) => {
-  const {exerciseName, exerciseDescription, musclesWorked} = req.body;
+  const {exerciseName, musclesWorked} = req.body;
   Exercise
-    .create({exerciseName, exerciseDescription, musclesWorked})
+    .create({exerciseName, musclesWorked})
     .then(results => {
       return res.status(200).json(results);
     });
