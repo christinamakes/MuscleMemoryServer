@@ -6,8 +6,7 @@ const workoutSchema = mongoose.Schema({
   workoutName: {type: String, required: true},
   userId: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
   exercises: [{type: mongoose.Schema.Types.ObjectId, ref:'Exercise'}],
-  // musclesWorked: [{type: Number}],
-  // secondaryMusclesWorked: [{type: Number}]
+  datefield: {type: Date, default: Date.now},
 });
 
 workoutSchema.set('toObject', {
