@@ -27,6 +27,7 @@ router.get('/exercise', (req, res) => {
   Exercise
     .find()
     .populate('musclesWorked')
+    .sort({datefield: -1})
     .then(results => {
       return res.status(200).json(results);
     });

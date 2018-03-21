@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const exerciseSchema = mongoose.Schema({
   exerciseName: {type: String, required: true},
   musclesWorked: [{type: mongoose.Schema.Types.ObjectId, ref:'Muscle', required: true}],
+  datefield: {type: Date, default: Date.now},
   secondaryMusclesWorked: [{type: Number}]
 });
 
