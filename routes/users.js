@@ -113,7 +113,7 @@ router.post('/users', bodyParser.json(), (req, res, next) => {
       .then(user => {
         return res.status(201).json(user.toObject());
       }).catch(err => {
-        console.log(err);
+        // console.log(err);
         if (err.reason === 'ValidationError') {
           return res.status(err.code).json(err);
         }
@@ -134,7 +134,7 @@ router.put('/users', bodyParser.json(), (req, res, next) => {
       .then(user => {
         return res.status(201).json(user);
       }).catch(err => {
-        console.log(err);
+        // console.log(err);
         if (err.reason === 'ValidationError') {
           return res.status(err.code).json(err);
         }
