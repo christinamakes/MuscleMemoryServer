@@ -3,7 +3,6 @@
 const { Strategy: JwtStrategy, ExtractJwt } = require('passport-jwt');
 
 const {JWT_SECRET} = require('../config');
-console.log(JWT_SECRET);
 
 const jwtStrategy = new JwtStrategy(
   {

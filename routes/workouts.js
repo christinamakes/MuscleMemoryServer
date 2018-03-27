@@ -11,7 +11,7 @@ const _ = require('lodash');
 
 // const jwtAuth = passport.authenticate('jwt', { session: false });
 
-
+const jwtAuth = passport.authenticate('jwt', { session: false });
 // A protected endpoint which needs a valid JWT to access it
 router.post('/workout', (req, res) => {
   const {userId, exercises, workoutName} = req.body;
@@ -25,8 +25,9 @@ router.post('/workout', (req, res) => {
 });
 
 
-router.get('/workout', (req, res) => {
+router.get('/workout', jwtAuth, (req, res) => {
   const {userId} = req.query;
+  console.log(req.user);
   Workout
     .find()
     .where({userId: userId})
@@ -72,11 +73,10 @@ router.get('/workout', (req, res) => {
 //     });
 // });
 
-router.get('/id/exercises', (req,res) => {
-  const {userId, workoutId} = req.query;
+router.get('/id/exercises', jwtAuth, (req,res) => {
+  const {workoutId} = req.query;
   Workout
-    .findById({_id: workoutId})
-    .where({userId: userId})
+    .findById(workoutId)
     .populate('exercises')
     .then(workout => {
       const names = workout.exercises.map(exercise => exercise.exerciseName);
@@ -84,22 +84,21 @@ router.get('/id/exercises', (req,res) => {
     });
 });
 
-router.get('/id/muscles', (req, res) => {
-  const {userId, workoutId} = req.query;
+router.get('/id/muscles', jwtAuth, (req, res) => {
+  const {workoutId} = req.query;
   Workout
-    .findById({_id: workoutId}) //or findById
-    .where({userId: userId})
+    .findById(workoutId) //or findById
+    // .where({userId: '5ab55cb0ecc3af36537a20d8'}) // PROBLEM CHILD!!
     .populate({path: 'exercises', populate: {path: 'musclesWorked', model: 'Muscle'}})
     .then(workout => {
       const muscles = workout.exercises // array of all exercises in workout, includes muscles
-      // array reducer
-      .reduce((aggregate, exercise) => {
-        return [...aggregate, ...exercise.musclesWorked];
-      }, []);
-      const countedNames = countBy(muscles, (muscle) => {
-        return muscle.name;
-      });
-      return res.status(200).json(countedNames);
+        .reduce((aggregate, exercise) => {
+          return [...aggregate, ...exercise.musclesWorked];
+        }, []);
+        const countedNames = countBy(muscles, (muscle) => {
+          return muscle.name;
+        });
+        return res.status(200).json(countedNames);
     });
 });
 
