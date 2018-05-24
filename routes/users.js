@@ -5,6 +5,7 @@ const router = express.Router();
 const Workout = require('../models/workout');
 const User = require('../models/user');
 const bodyParser = require('body-parser');
+const { getUserId } = require('../utils/getUserId');
 
 const mongoose = require('mongoose');
 
@@ -74,12 +75,12 @@ router.post('/users', bodyParser.json(), (req, res, next) => {
   const tooSmallField = Object.keys(sizedFields).find(
     field =>
       'min' in sizedFields[field] &&
-            req.body[field].trim().length < sizedFields[field].min
+      req.body[field].trim().length < sizedFields[field].min
   );
   const tooLargeField = Object.keys(sizedFields).find(
     field =>
       'max' in sizedFields[field] &&
-            req.body[field].trim().length > sizedFields[field].max
+      req.body[field].trim().length > sizedFields[field].max
   );
 
   if (tooSmallField || tooLargeField) {
@@ -95,7 +96,7 @@ router.post('/users', bodyParser.json(), (req, res, next) => {
     });
   }
 
-  let {username, password, firstName = '', lastName = ''} = req.body;
+  let { username, password, firstName = '', lastName = '' } = req.body;
   firstName = firstName.trim();
   lastName = lastName.trim();
 
@@ -105,42 +106,47 @@ router.post('/users', bodyParser.json(), (req, res, next) => {
       User
         .create({
           firstName,
-          lastName, 
+          lastName,
           username,
           password: hash,
           recentWorkoutDate
-      })
-      .then(user => {
-        return res.status(201).json(user.toObject());
-      }).catch(err => {
-        // console.log(err);
-        if (err.reason === 'ValidationError') {
-          return res.status(err.code).json(err);
-        }
-        res.status(500).json({code: 500, message: 'Internal server error'});
-      });
-    });  
+        })
+        .then(user => {
+          return res.status(201).json(user.toObject());
+        }).catch(err => {
+          // console.log(err);
+          if (err.reason === 'ValidationError') {
+            return res.status(err.code).json(err);
+          }
+          res.status(500).json({ code: 500, message: 'Internal server error' });
+        });
+    });
 });
 
 router.put('/users', bodyParser.json(), (req, res, next) => {
-  const {recentWorkout} = req.body;
-  const {userId} = req.params;
+  const { recentWorkout } = req.body;
+  const userId = getUserId(req);
+  console.log(userId, 'line 129 users.js');
+  console.log(recentWorkout, 'line 130 users.js');
   User
-    .findOneAndUpdate({userId: userId}, {recentWorkout: recentWorkout}, {new: true})
+    // .findById(userId)
+    // FIXME: SOMETHING IS BROKEN HERE
+    .findByIdAndUpdate(userId, { recentWorkout: recentWorkout }, { new: true })
     // .update({
     //   // $push: {recentWorkout}
     //   recentWorkout
-    //   })
-      .then(user => {
-        return res.status(201).json(user);
-      }).catch(err => {
-        // console.log(err);
-        if (err.reason === 'ValidationError') {
-          return res.status(err.code).json(err);
-        }
-        res.status(500).json({code: 500, message: 'Internal server error'});
+    // })
+    .then(user => {
+      console.log(user, 'line 139 users.js');
+      return res.status(201).json(user);
+    }).catch(err => {
+      // console.log(err);
+      if (err.reason === 'ValidationError') {
+        return res.status(err.code).json(err);
+      }
+      res.status(500).json({ code: 500, message: 'Internal server error' });
     });
-});  
+});
 
 
 module.exports = router;
