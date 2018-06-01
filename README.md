@@ -18,3 +18,6 @@ Link to live project: https://romantic-haibt-d0246c.netlify.com/
  
  # File Structure
   You'll find all the necessities in the /src folder :)
+
+  #Photo Credits
+  Homepage splash image: https://dribbble.com/shots/2764744-Sports-App-Branding
